@@ -10,6 +10,7 @@ import { LookPainting } from './components/LookPainting';
 import { NPC1, NPC2, NPC3 } from './components/NPC';
 import { BackgroundAudio } from './components/BackgroundAudio';
 import { PauseMenu } from './components/PauseMenu';
+import { LoadingScreen } from './components/LoadingScreen';
 
 function Carpet() {
   const carpetTexture = useTexture('/textures/tham.jpg');
@@ -32,6 +33,7 @@ function App() {
   const [hoveredPainting, setHoveredPainting] = useState(null);
   const [interactionPrompt, setInteractionPrompt] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const controlsRef = useRef();
 
   const paintingData = {
@@ -61,6 +63,14 @@ function App() {
     }
   };
 
+  // Ẩn loading screen sau khi trang load xong
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === 'KeyE' && hoveredPainting && !activePainting) {
@@ -74,6 +84,9 @@ function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+      {/* Màn hình loading */}
+      {isLoading && <LoadingScreen />}
+
       {/* Màn hình tạm dừng khi nhấn Esc */}
       <PauseMenu isPaused={isPaused} onResume={handleResume} />
 
